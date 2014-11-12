@@ -12,6 +12,6 @@ EIn Skript um aus dem Datenlotsen Webportal Noten abzurufen. Derzeit ausgerichte
 Changelog
 ===============================================
 12.11.2014
-Nur neue Fächer werden auch an die zweite Mailadresse geschickt
-Erstellung der Datei gefixt
-Ersetzen der Umlaute in den Faechernamen
+-Nur neue Fächer werden auch an die zweite Mailadresse geschickt
+-Erstellung der Datei gefixt
+-Ersetzen der Umlaute in den Faechernamen
