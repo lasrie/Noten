@@ -18,6 +18,8 @@ Am besten kann man dann das Skript auf einem Server laufen lassen
 
 -> crontab zum ausführen ( https://help.ubuntu.com/community/CronHowto )
 
+Dann python, mechanize und beautifulsoup installieren und das Skript ausführen lassen.
+
 Changelog
 ===============================================
 12.11.2014
