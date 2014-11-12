@@ -20,9 +20,9 @@ response = br.open("https://dualis.dhbw.de/scripts/mgrqcgi?APPNAME=CampusNet&PRG
 br.select_form('cn_loginForm')
 #und ausfuellen
 control = br.form.find_control("usrname")
-control.value = "LOGIN"
+control.value = "#######USR############"
 control = br.form.find_control("pass")
-control.value = "PASS"
+control.value = "#########PASS##############"
 response = br.submit()
 
 #Aus den Links auf der Seite nach dem Login den heraussuchen, dessen Text mit 'Leistungs' anfaengt -> 'ae'-Problem
@@ -51,71 +51,88 @@ for row in table.findAll("tr"):
 		fachname = cells[1].find('a').text
 		ausgabeString = cells
 		note = cells[4].text
-		faecher.append(fachname.encode("utf-8"))
+		faecher.append(fachname)
 		loknoten.append(fachname)
 		loknoten.append(bestanden)
 		loknoten.append(note)
-		noten.append(loknoten)		
+		noten.append(loknoten)
 
 faecherStr = ';'.join(faecher)
-
+faecherStr = faecherStr.replace(u"ü","ue")
+faecherStr = faecherStr.replace(u"ö","oe")
+faecherStr = faecherStr.replace(u"ä","ae")
+faecherStr = faecherStr.replace(u"ß","ss")
+faecherStr = faecherStr.replace(u"Ä","Ae")
+faecherStr = faecherStr.replace(u"Ö","Oe")
+faecherStr = faecherStr.replace(u"Ü","Ue")
 
 #-----------------------------------------------------------Daten lesen/speichern, um zu entscheiden, ob Mails gesendet werden muessen----------------------------------------------------
+neueFaecher = []
 if os.path.isfile("./fachspeicher.dat"):
-     f = open('./fachspeicher.dat', 'r+')
-     dateiText = f.read()
-     print len(dateiText)
-     if len(dateiText) == len(faecherStr):
-	#Daten in der Datei sind aktuell
-     	print "Datei ist aktuell"
-	mailSenden = False
-     else:
-	#Daten sind nicht aktuell, werden neu in die Datei geschrieben
-	f.write(faecherStr)
-	print "Datei neu geschrieben"
-	mailSenden = True	
+    f = open('./fachspeicher.dat', 'r+')
+    dateiText = f.read()
+    print len(dateiText)
+    if len(dateiText) == len(faecherStr):
+        #Daten in der Datei sind aktuell
+        print "Datei ist aktuell"
+        mailSenden = False
+    else:
+        #Daten sind nicht aktuell, werden neu in die Datei geschrieben
+        f.write(faecherStr)
+        print "Datei neu geschrieben"
+        mailSenden = True
+        #Herausfinden, welches Fach hinzugekommen ist
+        faecherArr = faecherStr.split(";")
+        dateiArr = dateiText.split(";")
+        i = 0
+        for fach in faecherArr:
+            if dateiArr[i] == fach:
+                i = i + 1
+            else:
+                neueFaecher.append(fach)
 else:
-     f = open('./fachspeicher.dat', 'r+')
-
-
-
-
-
+    f = open('./fachspeicher.dat', 'a')
+    mailSenden = False
+    print "Datei neu erstellt, Skript muss erneut laufen"
 
 
 #----------------------------------------------------------Emails senden------------------------------------------------------------------------------------------------------------------
-#Email inklusive Noten fuer mich selbst
 if mailSenden:
-	msgIch = "\n Hallo Lasse,\n Na, alles klar? \n \n Es gab neue Noten: \n \n \n "
-
-	for note in noten:
-	    msgIch = msgIch + note[0] + " hast du mit einer Note von " + note[2] + " " + note[1] + "\n \n"		
-
-	msgIch = msgIch + "Gruss, \n\nDein Lasse :)"
-
-	to = '*************'
-	user = '**************'
-	pwd = '*************'
-	to2 = '**************'
-
-#Emailtext ohne Noten fuer den restlichen Kurs
-
-	msg = "\n" + "Hallo,"+"\n\n" + "Es sind Noten in den folgenden Fächern online:\n"
-	for fach in faecher:
-	    msg = msg +"\n"+ fach+ "\n"
+    msgIch = "\n Hallo Lasse,\n Na, alles klar? \n \n Es gab neue Noten: \n \n \n "
+    for note in noten:
+        note[0] = note[0].replace(u"ü","ue")
+        note[0] = note[0].replace(u"ö","oe")
+        note[0] = note[0].replace(u"ä","ae")
+        note[0] = note[0].replace(u"ß","ss")
+        note[0] = note[0].replace(u"Ä","Ae")
+        note[0] = note[0].replace(u"Ö","Oe")
+        note[0] = note[0].replace(u"Ü","Ue")
+        msgIch = msgIch + note[0] + " hast du mit einer Note von " + note[2] + " " + note[1] + "\n \n"
 
 
-#Emails senden
-	smtpserver = smtplib.SMTP("smtp.1und1.de",587)
-	smtpserver.ehlo()
-	smtpserver.starttls()
-	smtpserver.ehlo
-	smtpserver.login(user, pwd)
-	header = 'To:' + to + '\n' + 'From: ' + user + '\n' + 'Subject:Neue Noten online! \n'
-	msgIchk = header + msgIch
-	smtpserver.sendmail(user, to,msgIchk.encode("utf-8"))
+    msgIch = msgIch + "Gruss, \n\nDein Lasse :)"
+    to = '#################@bla.de'
+    user = '#################@bla.de'
+    pwd = '##########pass#############'
+    to2 = '#################@bla.de'
 
-	header = 'To:' + to2 + '\n' + 'From: ' + user + '\n' + 'Subject:Neue Noten online! \n'
-	msgk = header + msg
-	smtpserver.sendmail(user, to2,msgk)
-	smtpserver.close()
+
+
+    msg = "\n" + "Hallo,"+"\n\n" + "Es sind Noten in den folgenden Fächern online:\n"
+    print neueFaecher
+    for fach in neueFaecher:
+        msg = msg +"\n"+ fach.encode('ascii', 'ignore')+ "\n"
+
+    smtpserver = smtplib.SMTP("smtp.1und1.de",587)
+    smtpserver.ehlo()
+    smtpserver.starttls()
+    smtpserver.ehlo
+    smtpserver.login(user, pwd)
+    header = 'To:' + to + '\n' + 'From: ' + user + '\n' + 'Subject:Neue Noten online! \n'
+    msgIchk = header + msgIch
+    smtpserver.sendmail(user, to,msgIchk)
+
+    header = 'To:' + to2 + '\n' + 'From: ' + user + '\n' + 'Subject:Neue Noten online! \n'
+    msgk = header + msg
+    smtpserver.sendmail(user, to2,msgk)
+    smtpserver.close()
