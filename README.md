@@ -1,11 +1,11 @@
 Noten
 =====
 
-Script for fetching grades from the internet and sending a notification, if there are new grades onlin
+Script for fetching grades from the internet and sending a notification, if there are new grades online
 
 ===============================================
 
-EIn Skript um aus dem Datenlotsen Webportal Noten abzurufen. Derzeit ausgerichtet auf die DHBW Stuttgart
+Ein Skript um aus dem Datenlotsen Webportal Noten abzurufen. Derzeit ausgerichtet auf die DHBW Stuttgart
 
 How-To
 ==============================================
@@ -29,3 +29,8 @@ Changelog
   Erstellung der Datei gefixt
   
   Ersetzen der Umlaute in den Faechernamen
+  
+ToDo
+================================================
+- Untersuchen der einzelnen Punkte auf derń Prüfungsergebnisseite, zustzlich zur Leistungsübersicht
+- Klassenstruktur statt Skript
